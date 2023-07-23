@@ -30,10 +30,32 @@ public class Controller {
     @Autowired
     private Repository repository;
     
-    @GetMapping 
+    @GetMapping
     public Page<MeetingDTO> list(@PageableDefault(size = 100) Pageable page){
-        log.log(Level.INFO, "LIST, {0}", page);
+        log.log(Level.INFO, "LIST: {0}", page);
         return repository.findAllByActiveTrue(page).map(MeetingDTO::new);
+    }
+    
+    @GetMapping ("/{id}") 
+    public MeetingDTO get(@PathVariable("id") String snowflake) {
+        log.log(Level.INFO, "GET: {0}", snowflake);
+        try {
+            return new MeetingDTO(repository.findBySnowflake(snowflake));
+        } catch ( Exception ex ){
+            log.log(Level.WARNING, "Erro ao buscar por snowflake, não localizado.");
+            return null;
+        }
+    }
+    
+    @GetMapping ("state/{state}") 
+    public Page<MeetingDTO> getByState(@PageableDefault(size = 100) Pageable page, @PathVariable("state") String state) {
+        log.log(Level.INFO, "GET STATE: {0}", state);
+        try {
+            return repository.findAllByActiveTrueAndState(page, state).map(MeetingDTO::new);
+        } catch ( Exception ex ){
+            log.log(Level.WARNING, "Erro ao buscar por estado, não localizado.");
+            return null;
+        }
     }
     
     @PostMapping
@@ -61,3 +83,4 @@ public class Controller {
         meeting.deactivate();
     }
 }
+    
