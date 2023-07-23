@@ -31,7 +31,7 @@ public class Controller {
     private Repository repository;
     
     @GetMapping
-    public Page<MeetingDTO> list(@PageableDefault(size = 100) Pageable page){
+    public Page<MeetingDTO> list(@PageableDefault(size = 1000) Pageable page){
         log.log(Level.INFO, "LIST: {0}", page);
         return repository.findAllByActiveTrue(page).map(MeetingDTO::new);
     }
@@ -48,7 +48,7 @@ public class Controller {
     }
     
     @GetMapping ("state/{state}") 
-    public Page<MeetingDTO> getByState(@PageableDefault(size = 100) Pageable page, @PathVariable("state") String state) {
+    public Page<MeetingDTO> getByState(@PageableDefault(size = 1000) Pageable page, @PathVariable("state") String state) {
         log.log(Level.INFO, "GET STATE: {0}", state);
         try {
             return repository.findAllByActiveTrueAndState(page, state).map(MeetingDTO::new);
